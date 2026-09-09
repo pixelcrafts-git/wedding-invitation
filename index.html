@@ -266,9 +266,15 @@
   const rsvpForm = document.getElementById("rsvpForm");
   const rsvpStatus = document.getElementById("rsvpStatus");
   const backgroundMusic = document.getElementById("backgroundMusic");
-  backgroundMusic.play().catch(() => {
-    document.addEventListener("pointerdown", () => backgroundMusic.play(), { once: true });
-  });
+  // Try autoplay first. If the browser blocks it, the visitor's first tap or
+  // key press starts the same audio within that permitted user interaction.
+  function startBackgroundMusic() {
+    backgroundMusic.play().catch(() => {});
+  }
+  document.addEventListener("pointerdown", startBackgroundMusic, { once: true, capture: true });
+  document.addEventListener("touchstart", startBackgroundMusic, { once: true, capture: true });
+  document.addEventListener("keydown", startBackgroundMusic, { once: true });
+  startBackgroundMusic();
 
   document.getElementById("openRsvp").onclick = () => {
     rsvpBox.classList.toggle("hidden");
