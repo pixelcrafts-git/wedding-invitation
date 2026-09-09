@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Save the Date | Salini &amp; Sreekanth</title>
+  <style>
+    :root { --bg1:#fff8f0; --bg2:#ffe7d1; --card:#ffffffcc; --text:#3b2f2f; --accent:#c56b4f; }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; min-height:100vh; padding:32px 20px;
+      font-family:Georgia, serif; color:var(--text);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    }
+    main { width:min(1000px,100%); margin:auto; text-align:center; }
+    h1 { margin:0; color:var(--accent); font-size:clamp(2rem,5vw,3rem); }
+    .subtitle { margin:10px 0 28px; font-size:1.1rem; }
+    .photo {
+      width:min(500px,100%); margin:auto; overflow:hidden; border:0; padding:0;
+      border-radius:18px; background:var(--card); box-shadow:0 12px 28px rgba(0,0,0,.12);
+      aspect-ratio:4/5; display:grid; place-items:center; position:relative; cursor:pointer;
+    }
+    .photo img { width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0; transition:opacity .25s ease; }
+    .photo:hover img { transform:scale(1.05); }
+    .placeholder { color:var(--accent); font-size:1.1rem; padding:20px; }
+    .hint { margin:14px 0 0; font-size:.95rem; opacity:.75; }
+    .back {
+      display:inline-block; margin-top:30px; padding:10px 18px; border-radius:999px;
+      background:var(--accent); color:#fff; text-decoration:none;
+    }
+    .back:hover { opacity:.9; }
+    .note { margin-top:18px; font-size:.9rem; opacity:.75; }
+  </style>
+</head>
+<body>
+  <!-- Uses the same music file as the invitation page. -->
+  <audio id="backgroundMusic" autoplay loop preload="auto">
+    <source src="wedding-song.mp3" type="audio/mpeg" />
+  </audio>
+  <main>
+    <h1>Save the Date</h1>
+    <p class="subtitle">Salini &amp; Sreekanth</p>
+
+    <section aria-label="Save the date photo gallery">
+      <button class="photo" id="photoButton" type="button" aria-label="Show next photo">
+        <span class="placeholder" id="placeholder">Photo coming soon</span>
+        <img id="photo" alt="Salini and Sreekanth save the date photo" hidden />
+      </button>
+      <p class="hint" id="hint">Tap the photo to see the next one</p>
+    </section>
+
+    <a class="back" href="index.html">Back to Invitation</a>
+    <p class="note">Our favourite memories together.</p>
+  </main>
+  <script>
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    backgroundMusic.play().catch(() => {
+      document.addEventListener("pointerdown", () => backgroundMusic.play(), { once: true });
+    });
+
+    const photos = [
+      "images/image 01.jpg",
+      "images/image 1.jpg",
+      "images/image 2.jpg",
+      "images/image 3.jpg",
+      "images/image 4.jpg",
+      "images/image 5.jpg",
+      "images/image 6.jpg",
+      "images/image 7.jpg",
+      "images/image 8.jpg",
+      "images/image 9.jpg",
+      "images/image 10.jpg"
+    ];
+    const photo = document.getElementById("photo");
+    const placeholder = document.getElementById("placeholder");
+    const hint = document.getElementById("hint");
+    let currentPhoto = 0;
+
+    function showPhoto(index) {
+      photo.src = photos[index];
+      photo.onload = () => {
+        photo.hidden = false;
+        placeholder.hidden = true;
+        hint.textContent = `Photo ${index + 1} of ${photos.length} — tap to see the next one`;
+      };
+      photo.onerror = () => {
+        photo.hidden = true;
+        placeholder.hidden = false;
+        hint.textContent = "Add photos to start the slideshow";
+      };
+    }
+
+    document.getElementById("photoButton").addEventListener("click", () => {
+      currentPhoto = (currentPhoto + 1) % photos.length;
+      showPhoto(currentPhoto);
+    });
+
+    showPhoto(currentPhoto);
+  </script>
+</body>
+</html>
