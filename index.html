@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wedding Invitation</title>
+  <title>Wedding Reception Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Allura&amp;family=Montserrat:wght@500;600&amp;display=swap" rel="stylesheet" />
   <style>
     :root{
       --bg1:#fff8f0;
@@ -17,7 +20,12 @@
       margin:0;
       font-family: "Georgia", serif;
       color:var(--text);
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      background: linear-gradient(
+        135deg,
+        #fffaf5,
+        #f9e7db,
+        #fff8f2
+      );
       min-height:100vh;
       display:flex;
       align-items:center;
@@ -58,16 +66,40 @@
     }
     .card{
       width:min(760px,100%);
-      background:var(--card);
-      backdrop-filter: blur(8px);
+      background:rgba(255, 255, 255, 0.82);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(190, 120, 90, 0.15);
       border-radius:20px;
       padding:28px;
-      box-shadow:0 15px 35px rgba(0,0,0,.12);
+      box-shadow:0 20px 60px rgba(80, 40, 30, 0.12);
       text-align:center;
       position:relative;
       z-index:2;
       animation:fadeIn .9s ease;
+      overflow:hidden;
     }
+    .corner-flower,
+    .edge-vine,
+    .name-floral{
+      position:absolute;
+      pointer-events:none;
+    }
+    .corner-flower{width:126px;height:126px;z-index:0;color:rgba(197,107,79,.38)}
+    .corner-flower.top-left{top:-23px;left:-22px}
+    .corner-flower.bottom-right{right:-23px;bottom:-24px;transform:rotate(180deg)}
+    .corner-flower .petal{fill:currentColor}
+    .corner-flower .center{fill:#d89b65}
+    .corner-flower .leaf{fill:#97aa86;opacity:.75}
+    .edge-vine{inset:12px;border:1px solid rgba(139,163,119,.27);border-radius:13px;z-index:0}
+    .edge-vine::before,.edge-vine::after{
+      content:"";position:absolute;width:46px;height:27px;border:1px solid rgba(139,163,119,.36);
+    }
+    .edge-vine::before{top:-1px;right:78px;border-width:0 0 1px 1px;border-radius:0 0 0 38px}
+    .edge-vine::after{bottom:-1px;left:78px;border-width:1px 1px 0 0;border-radius:0 38px 0 0}
+    .name-floral{width:300px;height:125px;top:94px;left:50%;transform:translateX(-50%);z-index:0;opacity:.28;color:#c98b73}
+    .name-floral .outline{fill:none;stroke:currentColor;stroke-width:1.2}
+    .name-floral .dot{fill:currentColor}
+    .card > :not(.hearts):not(.corner-flower):not(.edge-vine):not(.name-floral){position:relative;z-index:1}
     .hearts{
       position:absolute;
       inset:0;
@@ -76,18 +108,32 @@
       border-radius:20px;
     }
     h1{
-      margin:0 0 8px;
+      margin:0 0 16px;
       font-size:2.2rem;
       color:var(--accent);
     }
-    h2{margin:8px 0 18px;font-size:1.7rem}
+    h2{
+      margin:14px 0 26px;
+      color:var(--accent);
+      font-family:"Allura", cursive;
+      font-size:clamp(3.2rem, 10vw, 5.8rem);
+      font-weight:400;
+      line-height:1;
+      letter-spacing:.02em;
+      text-align:center;
+      position:relative;
+    }
+    h2 span{display:block}
+    h2 .ampersand{font-size:.62em; line-height:.7}
+    .invitation-text{margin:0 auto 6px;max-width:420px}
     p{margin:8px 0;line-height:1.5}
     .date{
-      margin:18px 0;
+      margin:0;
       font-weight:700;
       font-size:1.05rem;
       letter-spacing:.4px;
     }
+    .time{margin:4px 0 18px;font-weight:700;font-size:1.05rem}
     .btns{
       margin-top:20px;
       display:flex;
@@ -104,8 +150,17 @@
       cursor:pointer;
       text-decoration:none;
       font-size:.95rem;
+      font-family:"Montserrat", sans-serif;
+      font-weight:600;
+      letter-spacing:.02em;
+      transition:.3s ease;
     }
-    button:hover,a.btn:hover{opacity:.9}
+    button:hover,a.btn:hover{
+      opacity:.9;
+      transform:translateY(-3px);
+      box-shadow:0 8px 20px rgba(180,100,70,.25);
+    }
+    button:active,a.btn:active{transform:scale(.96)}
     .hidden{display:none}
     .rsvp-box{
       margin-top:16px;
@@ -113,6 +168,7 @@
       border-radius:12px;
       padding:12px;
     }
+    .rsvp-status{margin:8px 0 0;font-size:.9rem;color:var(--accent)}
     input{
       width:100%;
       max-width:300px;
@@ -127,6 +183,7 @@
       font-size:.9rem;
       opacity:.8;
     }
+    #countdown{font-size:1.08rem;font-weight:700;letter-spacing:.02em}
     @keyframes fadeIn{
       from{opacity:0;transform:translateY(14px)}
       to{opacity:1;transform:translateY(0)}
@@ -145,27 +202,48 @@
   </style>
 </head>
 <body>
+  <!-- Background music: wedding-song.mp3 is stored beside this file. -->
+  <audio id="backgroundMusic" autoplay loop preload="auto">
+    <source src="wedding-song.mp3" type="audio/mpeg" />
+  </audio>
   <div class="flower-stream left" id="flowersLeft"></div>
   <div class="flower-stream right" id="flowersRight"></div>
   <div class="card">
     <div class="hearts" id="hearts"></div>
-    <h1>Wedding Invitation</h1>
-    <p>With joyful hearts, we invite you to celebrate the wedding </p>
-    <h2>salini k.v weds sreekanth </h2>
-    <p class="date">Sunday, 24 May 2026 • 6:00 PM</p>
-    <p>Pothencode, TVM, Kerala, India</p>
+    <div class="edge-vine" aria-hidden="true"></div>
+    <svg class="corner-flower top-left" viewBox="0 0 120 120" aria-hidden="true">
+      <path class="leaf" d="M22 65C6 58 5 39 18 28c14 8 16 25 4 37Z"/><path class="leaf" d="M53 31C51 14 66 5 81 11c-2 17-14 25-28 20Z"/>
+      <g transform="translate(49 52)"><ellipse class="petal" rx="10" ry="22" transform="rotate(0) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(72) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(144) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(216) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(288) translate(0 -18)"/><circle class="center" r="7"/></g>
+      <path fill="none" stroke="#97aa86" stroke-width="1.5" d="M0 83C28 83 29 68 43 58"/>
+    </svg>
+    <svg class="corner-flower bottom-right" viewBox="0 0 120 120" aria-hidden="true">
+      <path class="leaf" d="M22 65C6 58 5 39 18 28c14 8 16 25 4 37Z"/><path class="leaf" d="M53 31C51 14 66 5 81 11c-2 17-14 25-28 20Z"/>
+      <g transform="translate(49 52)"><ellipse class="petal" rx="10" ry="22" transform="rotate(0) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(72) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(144) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(216) translate(0 -18)"/><ellipse class="petal" rx="10" ry="22" transform="rotate(288) translate(0 -18)"/><circle class="center" r="7"/></g>
+      <path fill="none" stroke="#97aa86" stroke-width="1.5" d="M0 83C28 83 29 68 43 58"/>
+    </svg>
+    <svg class="name-floral" viewBox="0 0 300 125" aria-hidden="true">
+      <path class="outline" d="M20 83c34-37 58-35 92-19M280 83c-34-37-58-35-92-19"/>
+      <g class="outline"><circle cx="72" cy="59" r="13"/><circle cx="72" cy="59" r="5"/><circle cx="228" cy="59" r="13"/><circle cx="228" cy="59" r="5"/><ellipse cx="104" cy="69" rx="7" ry="14" transform="rotate(-42 104 69)"/><ellipse cx="196" cy="69" rx="7" ry="14" transform="rotate(42 196 69)"/></g>
+      <g class="dot"><circle cx="38" cy="75" r="2"/><circle cx="55" cy="65" r="2"/><circle cx="262" cy="75" r="2"/><circle cx="245" cy="65" r="2"/></g>
+    </svg>
+    <h1>Wedding Reception</h1>
+    <p class="invitation-text">With joyful hearts, we invite you<br>to celebrate the wedding of</p>
+    <h2><span>Salini</span><span class="ampersand">&amp;</span><span>Sreekanth</span></h2>
+    <p class="date">✦ 12 SEPTEMBER 2026 ✦</p>
+    <p class="time">4:00 PM</p>
+    <p>TK Convention Centre, Thiruvananthapuram</p>
 
     <div class="btns">
-      <button id="openRsvp">RSVP</button>
-      <button id="countdownBtn">Show Countdown</button>
+      <button id="openRsvp">💌 RSVP</button>
+      <a class="btn" href="save-the-date.html">📸 Our Moments</a>
       <a class="btn" target="_blank"
-         href="https://www.google.com/maps/search/?api=1&query=Potencode+TVM+Kerala+India">
-         View Location
+         href="https://www.google.com/maps/place/TK+Convention+Centre/@8.6263416,76.8998507,3a,75y,282.89h,90t/data=!3m7!1e1!3m5!1sTAT5ZE9XzpZb37T8jRx_2g!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3DTAT5ZE9XzpZb37T8jRx_2g%26yaw%3D282.89105!7i16384!8i8192!4m14!1m7!3m6!1s0x3b05c1a32866a33b:0x4414baa777b92188!2sTK+Convention+Centre!8m2!3d8.6263774!4d76.8996685!16s%2Fg%2F11xlnrzf7k!3m5!1s0x3b05c1a32866a33b:0x4414baa777b92188!8m2!3d8.6263774!4d76.8996685!16s%2Fg%2F11xlnrzf7k?entry=ttu&amp;g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D">
+         📍 Location
       </a>
     </div>
 
     <div id="rsvpBox" class="rsvp-box hidden">
-      <form action="https://formspree.io/f/xjgeyzzy" method="POST">
+      <form id="rsvpForm" action="https://formspree.io/f/xjgeyzzy" method="POST">
         <input type="hidden" name="_subject" value="New Wedding RSVP" />
         <input type="hidden" name="_captcha" value="false" />
 
@@ -175,19 +253,46 @@
         <br />
         <button type="submit">Submit RSVP</button>
       </form>
+      <p id="rsvpStatus" class="rsvp-status" role="status" aria-live="polite"></p>
     </div>
 
     <p id="countdown" class="footer"></p>
   </div>
 
 <script>
-  const weddingDate = new Date("2026-05-24T18:00:00");
+  const weddingDate = new Date("2026-09-12T18:00:00");
   const countdownEl = document.getElementById("countdown");
   const rsvpBox = document.getElementById("rsvpBox");
+  const rsvpForm = document.getElementById("rsvpForm");
+  const rsvpStatus = document.getElementById("rsvpStatus");
+  const backgroundMusic = document.getElementById("backgroundMusic");
+  backgroundMusic.play().catch(() => {
+    document.addEventListener("pointerdown", () => backgroundMusic.play(), { once: true });
+  });
 
   document.getElementById("openRsvp").onclick = () => {
     rsvpBox.classList.toggle("hidden");
   };
+
+  rsvpForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitButton = rsvpForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    rsvpStatus.textContent = "Sending your RSVP...";
+
+    try {
+      const response = await fetch(rsvpForm.action, {
+        method: "POST",
+        body: new FormData(rsvpForm),
+        headers: { Accept: "application/json" }
+      });
+      if (!response.ok) throw new Error("RSVP submission failed");
+      window.location.href = "thankyou.html";
+    } catch (error) {
+      rsvpStatus.textContent = "We couldn't send your RSVP. Please try again.";
+      submitButton.disabled = false;
+    }
+  });
 
   function updateCountdown() {
     const now = new Date();
@@ -204,7 +309,6 @@
     countdownEl.textContent = `Countdown: ${d}d ${h}h ${m}m ${s}s`;
   }
 
-  document.getElementById("countdownBtn").onclick = updateCountdown;
   setInterval(updateCountdown, 1000);
   updateCountdown();
 
