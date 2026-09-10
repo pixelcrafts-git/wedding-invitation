@@ -273,6 +273,7 @@
   }
   document.addEventListener("pointerdown", startBackgroundMusic, { once: true, capture: true });
   document.addEventListener("touchstart", startBackgroundMusic, { once: true, capture: true });
+  document.addEventListener("click", startBackgroundMusic, { once: true, capture: true });
   document.addEventListener("keydown", startBackgroundMusic, { once: true });
   startBackgroundMusic();
 
